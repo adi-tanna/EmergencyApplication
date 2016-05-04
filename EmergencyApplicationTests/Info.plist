@@ -20,5 +20,13 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Give Me location Fag</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Need to stalk you bruh</string>
 </dict>
 </plist>
