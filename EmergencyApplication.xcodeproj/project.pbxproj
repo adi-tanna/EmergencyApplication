@@ -13,6 +13,12 @@
 		48EC6F431C44A73D00A88818 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48EC6F421C44A73D00A88818 /* Assets.xcassets */; };
 		48EC6F461C44A73D00A88818 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48EC6F441C44A73D00A88818 /* LaunchScreen.storyboard */; };
 		48EC6F511C44A73D00A88818 /* EmergencyApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48EC6F501C44A73D00A88818 /* EmergencyApplicationTests.swift */; };
+		DC0B730D36EF2E700365EE20 /* Pods_EmergencyApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468CD30FABBDAE5DD640445A /* Pods_EmergencyApplication.framework */; };
+		F73EA69D1CEABE7B0061F0CE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F73EA69C1CEABE7B0061F0CE /* GoogleService-Info.plist */; };
+		F79C9F7A1CEC2C5A007B7831 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F79C9F791CEC2C5A007B7831 /* CoreLocation.framework */; };
+		F79C9F7C1CEC2C65007B7831 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F79C9F7B1CEC2C65007B7831 /* MessageUI.framework */; };
+		F79C9F861CEC2C94007B7831 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F79C9F851CEC2C94007B7831 /* UIKit.framework */; };
+		F79EDB901CEDC03E006BE99D /* EmergencyLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */; };
 		F7DB7C9B1CD9A73B00B54CBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */; };
 		F7DB7C9C1CD9A73B00B54CBC /* AsEmergencyContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */; };
 		F7DB7C9D1CD9A73B00B54CBC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8C1CD9A73B00B54CBC /* Button.swift */; };
@@ -38,6 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0DAF71DD301C1D7934AE00F8 /* Pods-EmergencyApplication.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmergencyApplication.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EmergencyApplication/Pods-EmergencyApplication.debug.xcconfig"; sourceTree = "<group>"; };
+		2A6BAF3C02EA09C4BA42F26F /* Pods-EmergencyApplication.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EmergencyApplication.release.xcconfig"; path = "Pods/Target Support Files/Pods-EmergencyApplication/Pods-EmergencyApplication.release.xcconfig"; sourceTree = "<group>"; };
+		468CD30FABBDAE5DD640445A /* Pods_EmergencyApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EmergencyApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		486DF33E1C9A4A04002B4910 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
 		487B1B1F1CAA0DF300EB4EF4 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		48EC6F381C44A73D00A88818 /* EmergencyApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmergencyApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +57,18 @@
 		48EC6F4C1C44A73D00A88818 /* EmergencyApplicationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EmergencyApplicationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		48EC6F501C44A73D00A88818 /* EmergencyApplicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmergencyApplicationTests.swift; sourceTree = "<group>"; };
 		48EC6F521C44A73D00A88818 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F73EA69C1CEABE7B0061F0CE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F79C9F771CEC2C48007B7831 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		F79C9F791CEC2C5A007B7831 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		F79C9F7B1CEC2C65007B7831 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		F79C9F7D1CEC2C6B007B7831 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		F79C9F7F1CEC2C71007B7831 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		F79C9F811CEC2C89007B7831 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		F79C9F831CEC2C8E007B7831 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F79C9F851CEC2C94007B7831 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F79C9F871CEC2CA9007B7831 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		F79C9F891CEC2DA7007B7831 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmergencyLocation.swift; sourceTree = "<group>"; };
 		F7A6CAA71CD9F5E3009B9AFB /* EmergencyApplication-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EmergencyApplication-Bridging-Header.h"; sourceTree = "<group>"; };
 		F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsEmergencyContactVC.swift; sourceTree = "<group>"; };
@@ -68,8 +89,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F79C9F861CEC2C94007B7831 /* UIKit.framework in Frameworks */,
+				F79C9F7C1CEC2C65007B7831 /* MessageUI.framework in Frameworks */,
+				F79C9F7A1CEC2C5A007B7831 /* CoreLocation.framework in Frameworks */,
 				487B1B201CAA0DF300EB4EF4 /* libsqlite3.0.tbd in Frameworks */,
 				486DF33F1C9A4A04002B4910 /* Contacts.framework in Frameworks */,
+				DC0B730D36EF2E700365EE20 /* Pods_EmergencyApplication.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +116,8 @@
 				48EC6F3A1C44A73D00A88818 /* EmergencyApplication */,
 				48EC6F4F1C44A73D00A88818 /* EmergencyApplicationTests */,
 				48EC6F391C44A73D00A88818 /* Products */,
+				500D870E5D55DA103C7BC4F0 /* Frameworks */,
+				9D858C9D568DEBA85C362E19 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,6 +141,7 @@
 				F7DB7C9A1CD9A73B00B54CBC /* View */,
 				48EC6F421C44A73D00A88818 /* Assets.xcassets */,
 				48EC6F471C44A73D00A88818 /* Info.plist */,
+				F73EA69C1CEABE7B0061F0CE /* GoogleService-Info.plist */,
 			);
 			path = EmergencyApplication;
 			sourceTree = "<group>";
@@ -127,10 +155,38 @@
 			path = EmergencyApplicationTests;
 			sourceTree = "<group>";
 		};
+		500D870E5D55DA103C7BC4F0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F79C9F891CEC2DA7007B7831 /* StoreKit.framework */,
+				F79C9F871CEC2CA9007B7831 /* Social.framework */,
+				F79C9F851CEC2C94007B7831 /* UIKit.framework */,
+				F79C9F831CEC2C8E007B7831 /* Foundation.framework */,
+				F79C9F811CEC2C89007B7831 /* Security.framework */,
+				F79C9F7F1CEC2C71007B7831 /* SystemConfiguration.framework */,
+				F79C9F7D1CEC2C6B007B7831 /* AssetsLibrary.framework */,
+				F79C9F7B1CEC2C65007B7831 /* MessageUI.framework */,
+				F79C9F791CEC2C5A007B7831 /* CoreLocation.framework */,
+				F79C9F771CEC2C48007B7831 /* MobileCoreServices.framework */,
+				468CD30FABBDAE5DD640445A /* Pods_EmergencyApplication.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9D858C9D568DEBA85C362E19 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0DAF71DD301C1D7934AE00F8 /* Pods-EmergencyApplication.debug.xcconfig */,
+				2A6BAF3C02EA09C4BA42F26F /* Pods-EmergencyApplication.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		F7DB7C891CD9A73B00B54CBC /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */,
+				F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */,
 				F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */,
 				F7DB7C8C1CD9A73B00B54CBC /* Button.swift */,
 				F7DB7C8D1CD9A73B00B54CBC /* CircleButton.swift */,
@@ -183,9 +239,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48EC6F551C44A73D00A88818 /* Build configuration list for PBXNativeTarget "EmergencyApplication" */;
 			buildPhases = (
+				DBF0E1033DFFC2735FD11BE1 /* Check Pods Manifest.lock */,
 				48EC6F341C44A73D00A88818 /* Sources */,
 				48EC6F351C44A73D00A88818 /* Frameworks */,
 				48EC6F361C44A73D00A88818 /* Resources */,
+				520A5AB21E15A5ED215DFF8E /* Embed Pods Frameworks */,
+				1DF39DF495DB097BD3EFF210 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -227,6 +286,11 @@
 					48EC6F371C44A73D00A88818 = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = P87L74H9YS;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					48EC6F4B1C44A73D00A88818 = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -261,6 +325,7 @@
 			files = (
 				F7DB7CA51CD9A73B00B54CBC /* App_Icon_60pts@3x.png in Resources */,
 				48EC6F461C44A73D00A88818 /* LaunchScreen.storyboard in Resources */,
+				F73EA69D1CEABE7B0061F0CE /* GoogleService-Info.plist in Resources */,
 				48EC6F431C44A73D00A88818 /* Assets.xcassets in Resources */,
 				48EC6F411C44A73D00A88818 /* Main.storyboard in Resources */,
 			);
@@ -275,6 +340,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1DF39DF495DB097BD3EFF210 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EmergencyApplication/Pods-EmergencyApplication-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		520A5AB21E15A5ED215DFF8E /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EmergencyApplication/Pods-EmergencyApplication-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DBF0E1033DFFC2735FD11BE1 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		48EC6F341C44A73D00A88818 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -286,6 +399,7 @@
 				F7DB7CA11CD9A73B00B54CBC /* MenuDrawer.swift in Sources */,
 				F7DB7CA31CD9A73B00B54CBC /* ViewController.swift in Sources */,
 				F7DB7CA01CD9A73B00B54CBC /* LogInViewController.swift in Sources */,
+				F79EDB901CEDC03E006BE99D /* EmergencyLocation.swift in Sources */,
 				F7DB7C9C1CD9A73B00B54CBC /* AsEmergencyContactVC.swift in Sources */,
 				F7DB7C9E1CD9A73B00B54CBC /* CircleButton.swift in Sources */,
 				F7DB7CA21CD9A73B00B54CBC /* Register.swift in Sources */,
@@ -351,7 +465,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aditya Bhandari (623T8KU762)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -370,9 +485,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "0c70bc1f-59dc-49f9-9ed1-7ef5b38a9739";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -396,7 +512,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aditya Bhandari (623T8KU762)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -409,8 +526,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "0c70bc1f-59dc-49f9-9ed1-7ef5b38a9739";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -419,15 +537,75 @@
 		};
 		48EC6F561C44A73D00A88818 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0DAF71DD301C1D7934AE00F8 /* Pods-EmergencyApplication.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleInterchangeUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleIPhoneUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleNetworkingUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleSymbolUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleUtilities/Frameworks,
+				);
 				INFOPLIST_FILE = EmergencyApplication/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-lsqlite3";
-				PRODUCT_BUNDLE_IDENTIFIER = bhandari.EmergencyApplication;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleIPhoneUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GGLInstanceID/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/Google/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleSymbolUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleInterchangeUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleCloudMessaging/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleNetworkingUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GGLInstanceID/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/Google/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleCloudMessaging/Libraries,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bhandari.helpme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "EmergencyApplication/EmergencyApplication-Bridging-Header.h";
@@ -437,15 +615,75 @@
 		};
 		48EC6F571C44A73D00A88818 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A6BAF3C02EA09C4BA42F26F /* Pods-EmergencyApplication.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Aditya Bhandari (623T8KU762)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleInterchangeUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleIPhoneUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleNetworkingUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleSymbolUtilities/Frameworks,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleUtilities/Frameworks,
+				);
 				INFOPLIST_FILE = EmergencyApplication/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-lsqlite3";
-				PRODUCT_BUNDLE_IDENTIFIER = bhandari.EmergencyApplication;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleIPhoneUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GGLInstanceID/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/Google/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleSymbolUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleInterchangeUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleCloudMessaging/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleNetworkingUtilities/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GGLInstanceID/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/Google/Libraries,
+					"$(PROJECT_DIR)/EmergencyApplication/Third",
+					Party,
+					Lib/GoogleCloudMessaging/Libraries,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lsqlite3",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bhandari.helpme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "EmergencyApplication/EmergencyApplication-Bridging-Header.h";

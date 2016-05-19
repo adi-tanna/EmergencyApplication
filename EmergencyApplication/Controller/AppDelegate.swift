@@ -1,3 +1,4 @@
+
 //
 //  AppDelegate.swift
 //  EmergencyApplication
@@ -11,7 +12,7 @@ import Contacts
 
 @UIApplicationMain
 
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GCMReceiverDelegate {
 
    
     var window: UIWindow?
@@ -19,6 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var isAccessGranted:Bool = false
     var viewActivity:UIView?
     var indicator:UIActivityIndicatorView?
+    var connectedToGCM = false
+    var subscribedToTopic = false
+    var gcmSenderID: String?
+    var registrationToken: String?
+    var registrationOptions = [String: AnyObject]()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -28,7 +34,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print(objDB.getDatabaseFilePath())
         
         objDB.createDatabaseIfNotExist()
-    
+        
+        var configureError:NSError?
+        GGLContext.sharedInstance().configureWithError(&configureError)
+        assert(configureError == nil, "Error configuring Google services: \(configureError)")
+        gcmSenderID = GGLContext.sharedInstance().configuration.gcmSenderID
+        
+
+        let settings: UIUserNotificationSettings =
+        UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
+        application.registerUserNotificationSettings(settings)
+        application.registerForRemoteNotifications()
+        
+        let gcmConfig = GCMConfig.defaultConfig()
+        
+        gcmConfig.receiverDelegate = self
+       
+        GCMService.sharedInstance().startWithConfig(gcmConfig)
+        
         return true
     }
 
@@ -52,6 +75,138 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+     //MARK: GCM Register
+    func registrationHandler(registrationToken: String!, error: NSError!) {
+        if (registrationToken != nil) {
+            self.registrationToken = registrationToken
+            print(registrationToken)
+            NSUserDefaults.standardUserDefaults().setValue(self
+                .registrationToken, forKey: "GCMRegistrationToken")
+            
+        } else {
+            print("Registration to GCM failed with error: \(error.localizedDescription)")
+            let userInfo = ["error": error.localizedDescription]
+            print(userInfo);
+        }
+    }
+    
+    // [START on_token_refresh]
+    func onTokenRefresh() {
+        // A rotation of the registration tokens is happening, so the app needs to request a new token.
+        print("The GCM registration token needs to be changed.")
+        GGLInstanceID.sharedInstance().tokenWithAuthorizedEntity(gcmSenderID,
+                                                                 scope: kGGLInstanceIDScopeGCM, options: registrationOptions, handler: registrationHandler)
+    }
+    
+    func application( application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken
+        deviceToken: NSData ) {
+            // [END receive_apns_token]
+            // [START get_gcm_reg_token]
+            // Create a config and set a delegate that implements the GGLInstaceIDDelegate protocol.
+            let instanceIDConfig = GGLInstanceIDConfig.defaultConfig()
+            instanceIDConfig.delegate = self
+            // Start the GGLInstanceID shared instance with that config and request a registration
+            // token to enable reception of notifications
+            GGLInstanceID.sharedInstance().startWithConfig(instanceIDConfig)
+            self.registrationOptions = [kGGLInstanceIDRegisterAPNSOption:deviceToken,
+                kGGLInstanceIDAPNSServerTypeSandboxOption:true]
+            GGLInstanceID.sharedInstance().tokenWithAuthorizedEntity(gcmSenderID,
+                scope: kGGLInstanceIDScopeGCM, options: registrationOptions, handler: registrationHandler)
+            // [END get_gcm_reg_token]
+    }
+    
+    func application( application: UIApplication,
+        didReceiveRemoteNotification userInfo: [NSObject : AnyObject],
+        fetchCompletionHandler handler: (UIBackgroundFetchResult) -> Void) {
+            print("Notification received: \(userInfo)")
+            // This works only if the app started the GCM service
+            GCMService.sharedInstance().appDidReceiveMessage(userInfo);
+            // Handle the received message
+            // Invoke the completion handler passing the appropriate UIBackgroundFetchResult value
+            // [START_EXCLUDE]
+            NSNotificationCenter.defaultCenter().postNotificationName("onMessageReceived", object: nil,
+                userInfo: userInfo)
+            handler(UIBackgroundFetchResult.NewData);
+            // [END_EXCLUDE]
+    }
+    
+    func registerForGCM() -> Void {
+        let url = "http://107.196.101.242:8181/EmergencyApp/webapi/users/GcmRegister"
+        
+        var dict = [String : String] ()
+        dict["registrationId"] = NSUserDefaults.standardUserDefaults().valueForKey("GCMRegistrationToken") as? String
+        dict["contactNo"] = NSUserDefaults.standardUserDefaults().valueForKey("userContactNo") as? String
+        
+        callWebService(url, parameters: dict, httpMethod: "POST", completion: { (result) in
+            result
+            if(result["message"] as! String == "Successfull !!!"){
+                print(result["message"])
+            }else{
+                let alert = UIAlertController(title: "Alert", message: "Something Went Wrong while registing for GCM", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                    
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+                }
+                
+            }
+        }, failure:{ result -> Void in
+            let alert = UIAlertController(title: "Alert", message: "Something Went Wrong while registing for GCM", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                
+            });
+            
+            alert.addAction(alertActionOk)
+            dispatch_async(dispatch_get_main_queue()){
+                self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+            }
+            
+        })
+    }
+    
+    func unRegisterForGCM() -> Void {
+        let url = "http://107.196.101.242:8181/EmergencyApp/webapi/users/GcmUnRegister"
+        
+        var dict = [String : String] ()
+        dict["registrationId"] = NSUserDefaults.standardUserDefaults().valueForKey("GCMRegistrationToken") as? String
+        dict["contactNo"] = NSUserDefaults.standardUserDefaults().valueForKey("userContactNo") as? String
+        
+        callWebService(url, parameters: dict, httpMethod: "POST", completion: { (result) in
+            result
+            if(result["message"] as! String == "Successfull !!!"){
+                print(result["message"])
+            }else{
+                let alert = UIAlertController(title: "Alert", message: "Something Went Wrong while Unregisting for GCM", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                    
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+                }
+                
+            }
+            }, failure:{ result -> Void in
+                let alert = UIAlertController(title: "Alert", message: "Something Went Wrong while Unregisting for GCM", preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                    
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+                }
+                
+        })
     }
     
     func checkContactAuthorization () {
@@ -126,7 +281,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func callWebService(url: String, parameters: [String: AnyObject]?, httpMethod: String, completion: (result: [String: AnyObject]) -> Void, failure: (result: [String: AnyObject]) -> Void) {
+    func callWebService(url: String, parameters: AnyObject?, httpMethod: String, completion: (result: AnyObject) -> Void, failure: (result: AnyObject) -> Void) {
         
         let lobj_Request = NSMutableURLRequest(URL: NSURL(string: url)!)
         let session = NSURLSession.sharedSession()
@@ -151,12 +306,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case 200:
                 // 2: Create JSON object with data
                 do {
-                    let jsonDictionary = try NSJSONSerialization.JSONObjectWithData(receivedData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+                    let jsonDictionary = try NSJSONSerialization.JSONObjectWithData(receivedData, options: NSJSONReadingOptions.AllowFragments)
                     
-                    print("\(jsonDictionary! as [String:AnyObject])")
+                    print(jsonDictionary)
                     // 3: Pass the json back to the completion handler
                     
-                    completion(result: jsonDictionary!)
+                    completion(result: jsonDictionary) //as! [[String : AnyObject]]
                     
                 } catch {
                     print("error parsing json data")

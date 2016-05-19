@@ -12,15 +12,16 @@ class AsEmergencyContactVC: UIViewController , UITableViewDataSource,UITableView
 
     @IBOutlet var tblAsEmergency: UITableView!
     
-    var arrContacts = [Dictionary<String, String >] ()
+    var arrContacts = [[String: String ]] ()
     
     let objDB = Database.sharedDatabaseInstance.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        self.title = "You're as An Emergency Contacty"
-        
+        self.title = "You As An Emergency Contact"
+       
+        getAsEmergencyContacts()
         
     }
     override func viewWillAppear(animated: Bool) {
@@ -44,12 +45,91 @@ class AsEmergencyContactVC: UIViewController , UITableViewDataSource,UITableView
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell{
-        var cell = tableView.dequeueReusableCellWithIdentifier("cell")
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell")
         
-        cell?.textLabel?.text = arrContacts[indexPath.row][""] as String!
+        let lblName = cell?.contentView.viewWithTag(100) as! UILabel
         
-        cell?.detailTextLabel?.text = arrContacts[indexPath.row][""] as String!
+        let lblNumber = cell?.contentView.viewWithTag(101) as! UILabel
+        
+        let lblRequestStatus = cell?.contentView.viewWithTag(102) as! UILabel
+        
+        let btnYes = cell?.contentView.viewWithTag(103) as! UIButton
+        
+        let btnNo = cell?.contentView.viewWithTag(104) as! UIButton
+        
+        lblName.text = arrContacts[indexPath.row]["userName"] as String!
+        
+        lblNumber.text = arrContacts[indexPath.row]["userContactNo"] as String!
+        
+        if(arrContacts[indexPath.row]["accepted"] as String! == "0"){
+            lblRequestStatus.text = "Accept Pending Request"
+            btnYes.hidden = false
+            btnNo.hidden = false
+        }else{
+            lblRequestStatus.text = "Request Accepted"
+            
+            btnYes.hidden = true
+            btnNo.hidden = true
+        }
         
         return cell!
+    }
+    
+    func getAsEmergencyContacts(){
+        
+        let userid = NSUserDefaults.standardUserDefaults().integerForKey("userId")
+        
+        let HttpRequestType:String = "GET"
+        
+        let parameters:AnyObject? = nil
+        
+        let is_URL: String = "http://107.196.101.242:8181/EmergencyApp/webapi/users/\(userid)/asEmergencyContact"
+        
+        AppDelegate.getAppDelegate().showActivityIndicator()
+        
+        AppDelegate.getAppDelegate().callWebService(is_URL, parameters: parameters, httpMethod: HttpRequestType, completion: { result -> Void in
+            
+            dispatch_async(dispatch_get_main_queue()){
+                
+                AppDelegate.getAppDelegate().hideActivityIndicator()
+            
+                self.parseResponse(result as! [[String : AnyObject]])
+                
+                if(self.arrContacts.count > 0){
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.tblAsEmergency.reloadData()
+                    }
+                }
+            }
+            }, failure:{ result -> Void in
+                
+                let alert = UIAlertController(title: "", message: result["message"] as? String, preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                    
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    
+                    AppDelegate.getAppDelegate().hideActivityIndicator()
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+        })
+    }
+    
+    func parseResponse(response : [[String:AnyObject]]){
+        
+        for dict in response{
+            
+            var localDict = [String: String]()
+            
+            for (key,value) in dict{
+                
+                localDict[key] = "\(value)"
+            }
+            arrContacts.append(localDict)
+        }
     }
 }

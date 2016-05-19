@@ -20,7 +20,7 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
     
     var tagOfSelectTextFeild = 0
     
-    var arrAllContacts = [Dictionary <String, String>] () /* In order to add contact into Arr */
+    var arrAllContacts = [[String : String]] () //[Dictionary <String, String>] () /* In order to add contact into Arr */
 
     var arrToSendSms = [String] ()
     
@@ -29,7 +29,6 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
     let objDB = Database.sharedDatabaseInstance.sharedInstance
     
     // MARK: View Life Cycle
-    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -56,11 +55,7 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
         
         self.navigationItem.leftBarButtonItem = btnDone
         
-        let strPN = NSUserDefaults.standardUserDefaults().objectForKey("userId") as! String
-        
-        let strSelectQuery = "select * from contacts where user_contact_no = '\(strPN)'"
-        
-        arrAllContacts = objDB.selectQuery(strSelectQuery)
+        addEmergencyContacts(true)
     }
     
     override func viewWillAppear(animated: Bool){
@@ -71,7 +66,6 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
     func contactPicker(picker: CNContactPickerViewController, didSelectContact contact: CNContact) {
 
         displayDataIntoField(contact)
-    
     }
     
     func displayDataIntoField(arrData:CNContact) {
@@ -80,9 +74,9 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
             
             let numbers:[CNLabeledValue] = arrData.phoneNumbers
             
-            var arr = [Dictionary <String, String>] ()
+            var arr = [[String : String]] ()
             
-            var dict = Dictionary <String, String>()
+            var dict =  [String: String]()
             
             if(numbers.count > 0){
                 
@@ -103,11 +97,11 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
                         strNumber = String(str2)
                     }
                     
-                    dict["contact_type"] = "\(strLable)"
+                    dict["emergencyContactType"] = "\(strLable)"
                     
-                    dict["emergency_contact_no"] = strNumber
+                    dict["emergencyContactNo"] = strNumber
                     
-                    dict["emergency_contact_name"] = strName
+                    dict["emergencyContactName"] = strName
                     
                     arr.append(dict)
                 }
@@ -116,7 +110,7 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
         }
     }
     
-    func askUserForSelection(arrContacts:[Dictionary <String, String>]) {
+    func askUserForSelection(arrContacts:[[String: String]]) {
         
         if(arrContacts.count > 0){
             
@@ -124,27 +118,26 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
             
             for (var dict) in arrContacts{
                 
-                let strLabel =  dict["contact_type"] as String!
+                let strLabel =  dict["emergencyContactType"] as String!
                 
-                let strNumber = dict["emergency_contact_no"] as String!
+                let strNumber = dict["emergencyContactNo"]as String!
                 
-                dict["user_contact_no"] = NSUserDefaults.standardUserDefaults().valueForKey("userId") as! String!
+                dict["userContactNo"] = NSUserDefaults.standardUserDefaults().valueForKey("userContactNo") as! String!
                 
-                dict["is_accepted"] = "0"
+                dict["userName"] = NSUserDefaults.standardUserDefaults().valueForKey("userName") as! String!
+                
+                dict["accepted"] = "0"
                 
                 let somethingAction = UIAlertAction(title: "\(strLabel) - \(strNumber)", style: UIAlertActionStyle.Default, handler: {(alert: UIAlertAction!) in
-                    print("something")
                     
-                    let ispresent = self.arrAllContacts.contains({element -> Bool in
-                        
-                        return (element as [String:String]  == dict)
-                        
+                    let ispresent = self.arrAllContacts.contains({(element:[String : String]) -> Bool in
+                          return ((element["emergencyContactNo"]! as String).isEqual(strNumber))
                     })
                     
                     if(!ispresent as Bool){
                         self.arrAllContacts.append(dict);
                         
-                        self.arrToSendSms.append(dict["emergency_contact_no"] as String!)
+                        self.arrToSendSms.append(dict["emergencyContactNo"] as String!)
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             self.tblContacts.reloadData()
@@ -221,11 +214,11 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
         
         let cell = tableView.dequeueReusableCellWithIdentifier("identifierCell")! as UITableViewCell
         
-        var dict = arrAllContacts[indexPath.row] as Dictionary<String, String>
+        var dict = arrAllContacts[indexPath.row] as [String: AnyObject]
     
-        cell.textLabel?.text = dict["emergency_contact_name"]
+        cell.textLabel?.text = dict["emergencyContactName"] as! String!
         
-        cell.detailTextLabel?.text = dict["emergency_contact_no"]
+        cell.detailTextLabel?.text = (dict["emergencyContactNo"]) as! String!
         
         return cell
     }
@@ -237,10 +230,10 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             
-            if(arrToSendSms.contains(arrAllContacts[indexPath.row]["emergency_contact_no"] as String!)){
+            if(arrToSendSms.contains(arrAllContacts[indexPath.row]["emergencyContactNo"] as String!)){
                 print(arrToSendSms);
             
-                arrToSendSms.removeAtIndex(arrToSendSms.indexOf(arrAllContacts[indexPath.row]["emergency_contact_no"] as String!)!)
+                arrToSendSms.removeAtIndex(arrToSendSms.indexOf(arrAllContacts[indexPath.row]["emergencyContactNo"] as String!)!)
                 
                 print(arrToSendSms);
             }
@@ -272,38 +265,91 @@ class ViewController_PhoneNumbers: UIViewController, UITextFieldDelegate, CNCont
         
     }
     
+    //MARK: Done button Action
     func btnDonePressed(){
+
+        addEmergencyContacts(false)
+    }
+    
+    func addEmergencyContacts(isGetRequest:Bool){
         
-        let strDeleteQuery = "delete from contacts";
+        let userid = NSUserDefaults.standardUserDefaults().integerForKey("userId")
         
-        objDB.deleteQuery(strDeleteQuery);
+        var HttpRequestType:String?
         
-        for (var dict) in arrAllContacts{
-            
-            let strUserNo = dict["user_contact_no"] as String!
-            
-            let strLable = dict["contact_type"] as String!
-            
-            let strNumber = dict["emergency_contact_no"] as String!
-            
-            let strName = dict["emergency_contact_name"] as String!
-            
-            let isAccepted = dict["is_accepted"] as String!
-            
-            let string = "insert into contacts (user_contact_no,emergency_contact_no,emergency_contact_name,contact_type,is_accepted) values ('\(strUserNo)','\(strNumber)','\(strName)','\(strLable)','\(isAccepted)')"
-            
-            objDB.insertQuery(string);
-        }
-        
-        if(arrToSendSms.count > 0){
-//            sendMessageToContacts(arrToSendSms); /*Enable this line to send SMS*/
-        }
-        
-        if(fromHomeVC){
-            fromHomeVC = false
-            navigationController?.popViewControllerAnimated(true);
+        var parameters:AnyObject?
+        if(isGetRequest){
+            HttpRequestType = "GET"
+            parameters = nil
         }else{
-            navigationController?.popToRootViewControllerAnimated(false)
+            HttpRequestType = "POST"
+            parameters = arrAllContacts
         }
+        
+        let is_URL: String = "http://107.196.101.242:8181/EmergencyApp/webapi/users/\(userid)/EmergencyContact"
+        
+         AppDelegate.getAppDelegate().showActivityIndicator()
+        
+        AppDelegate.getAppDelegate().callWebService(is_URL, parameters: parameters, httpMethod: HttpRequestType!, completion: { result -> Void in
+            
+           
+            dispatch_async(dispatch_get_main_queue()){
+                AppDelegate.getAppDelegate().hideActivityIndicator()
+                
+                if(isGetRequest){
+                    
+                    self.parseResponse(result as! [[String : AnyObject]])
+                    
+                    if(self.arrAllContacts.count > 0){
+                        dispatch_async(dispatch_get_main_queue()){
+                            self.tblContacts.reloadData()
+                        }
+                    }
+                }else{
+                    if(self.arrToSendSms.count > 0){
+                        //            sendMessageToContacts(arrToSendSms); /*Enable this line to send SMS*/
+                    }
+                    if(self.fromHomeVC){
+                        self.fromHomeVC = false
+                        self.navigationController?.popViewControllerAnimated(true);
+                    }else{
+                        self.navigationController?.popToRootViewControllerAnimated(false)
+                    }
+                }
+            }
+            }, failure:{
+                (result) -> Void in
+                
+                let alert = UIAlertController(title: "", message: result["message"] as? String, preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                    
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    
+                    AppDelegate.getAppDelegate().hideActivityIndicator()
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+        })
+        
+    }
+    
+    func parseResponse(response : [[String:AnyObject]]){
+        
+        for dict in response{
+            
+            var localDict = [String: String]()
+            
+            for (key,value) in dict{
+
+                localDict[key] = "\(value)"
+            }
+            arrAllContacts.append(localDict)
+        }
+        
+        
     }
 }

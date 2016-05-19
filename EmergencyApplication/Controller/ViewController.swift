@@ -23,10 +23,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     let objDB = Database.sharedDatabaseInstance.sharedInstance
     
+    var timerTemp: NSTimer?
+    
+    var timer: NSTimer?
+    
+    
     override func viewDidLoad() {
 
         super.viewDidLoad()
 
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.onEmergencyOccurrence(_:)), name:"onEmergencyOccurrence", object: nil)
+        
         vwMenuDrawer.hidden = true
         
         vwMenuDrawer.delegate = self
@@ -35,18 +42,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
         self.locationManager.requestAlwaysAuthorization()
         
-        self.locationManager.requestWhenInUseAuthorization()
-        
         if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             self.locationManager.requestAlwaysAuthorization()
             locationManager.startUpdatingLocation()
+            Map.showsUserLocation = true
         }
         
         self.navigationItem.leftBarButtonItem = vwMenuDrawer.addSlideMenuButton()
     }
     
+    func onEmergencyOccurrence(notification: NSNotification){
+        
+        print(notification)
+        
+        let objVC:EmergencyLocation =  self.storyboard?.instantiateViewControllerWithIdentifier("emergencyLocationVC") as! EmergencyLocation
+        
+        self.navigationController?.pushViewController(objVC, animated: true)
+    }
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
         if(self.vwMenuDrawer.btnMenu != nil){
@@ -54,13 +68,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         }
     }
     
+    
+    //MARK: Menu View Delegate Methods
     func selectIndexInMenu(index : Int32) {
         let topViewController : UIViewController = self.navigationController!.topViewController!
         print("View Controller is : \(topViewController) \n", terminator: "")
         
         if(index == 3){
+             AppDelegate.getAppDelegate().unRegisterForGCM()
             self.vwMenuDrawer.hidden = true
-        }else{
+        }
+        else{
             dispatch_async(dispatch_get_main_queue()) {
                 self.vwMenuDrawer.onSlideMenuButtonPressed(self.vwMenuDrawer.btnMenu!)
             }
@@ -98,39 +116,64 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
     }
     
-    //MARK: Send SMS Invite
-    @IBAction func SendSms(sender: AnyObject) {
+     //MARK: Declare Emergency
+    @IBAction func btnActnDeclareEmergency(sender: UIButton) {
+       timerTemp = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(ViewController.declareEmergency), userInfo: nil, repeats: true)
         
-        let strPN = NSUserDefaults.standardUserDefaults().objectForKey("userId") as! String
-        
-        let strSelectQuery = "select * from contacts where user_contact_no = '\(strPN)'"
-        
-        let arrAllContacts = objDB.selectQuery(strSelectQuery)
-        
-        print(arrAllContacts)
-        
-        var arrNumbers = [String]()
-        
-        for (var dict) in arrAllContacts{
-            
-            print(dict["emergency_contact_no"] as String!)
-            
-            arrNumbers.append(dict["emergency_contact_no"] as String!)
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, dispatch_get_main_queue()) {
+            self.timerTemp?.invalidate()
         }
         
-        let messageVC = MFMessageComposeViewController()
+        if sender.selected {
+            timer?.invalidate()
+            sender.selected = false
+        }else{
+            sender.selected = true
+            
+            timer = NSTimer.scheduledTimerWithTimeInterval(30.0, target: self, selector: #selector(ViewController.declareEmergency), userInfo: nil, repeats: true)
+        }
+    }
+    func declareEmergency() -> Void {
         
-        let username = NSUserDefaults.standardUserDefaults().valueForKey("userName") as! String
+        let url = "http://107.196.101.242:8181/EmergencyApp/webapi/users/DeclareEmergency"
         
-        messageVC.body = "\(username) has added you as an Emergency contact on Emergency App. Please click on link to install app."
+        let userdefaults = NSUserDefaults.standardUserDefaults()
         
-//        http://maps.apple.com/?q=\(coord.latitude),\(coord.longitude)";
+        var dict = [String: String] ()
+
+        dict["userName"] = userdefaults.valueForKey("userName") as? String
+        dict["contactNo"] = userdefaults.valueForKey("userContactNo") as? String
+        dict["latitude"] = "\(coord.latitude)"
+        dict["longitude"] = "\(coord.longitude)"
         
-        messageVC.recipients = arrNumbers
-       
-        messageVC.messageComposeDelegate = self;
-        
-        self.presentViewController(messageVC, animated: false, completion: nil)
+        AppDelegate.getAppDelegate().callWebService(url, parameters: dict, httpMethod: "POST", completion: { (result) in
+            if(result["message"] as! String == "Successfull !!!"){
+                print(result["message"])
+            }else{
+                let alert = UIAlertController(title: "Alert", message: result["message"] as? String, preferredStyle: UIAlertControllerStyle.Alert)
+                
+                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                     self.timer?.invalidate()
+                });
+                
+                alert.addAction(alertActionOk)
+                dispatch_async(dispatch_get_main_queue()){
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+            }
+        }, failure:{ result -> Void in
+            let alert = UIAlertController(title: "Alert", message: "Something Went Wrong while Declaring Emergency", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                self.timer?.invalidate()
+            });
+            
+            alert.addAction(alertActionOk)
+            dispatch_async(dispatch_get_main_queue()){
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+        })
     }
     
     func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {

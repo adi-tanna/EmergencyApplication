@@ -17,71 +17,19 @@ class Register: UIViewController, UITextFieldDelegate {
     @IBOutlet var txtfldPhoneNumber: UITextField!
     @IBOutlet var txtfldLastName: UITextField!
     
-    
+    //MARK: View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
        
     }
 
-    @IBAction func btnRegister(sender: AnyObject) {
-        
-        let fname = txtfldFirstName.text as String!
-        
-        let lname = txtfldLastName.text as String!
-        
-        let phone_number = txtfldPhoneNumber.text as String!
-        
-        let password = txtfldPassword.text as String!
-        
-        if(phone_number.characters.count == 10){
-            
-             AppDelegate.getAppDelegate().showActivityIndicator()
-            
-            registerUser()
-            
-//            let success = checkIfUserExist(phone_number)
-//            
-//            if(!success){
-//                let strInsertQuery = "insert into UserInfo (first_name,last_name,phone_number, password) values ('\(fname)','\(lname)','\(phone_number)', '\(password)')"
-//                
-//                objDB.insertQuery(strInsertQuery);
-//                
-//                let userDefaults =  NSUserDefaults.standardUserDefaults()
-//                
-//                userDefaults.setValue("\(fname) \(lname)", forKey: "userName");
-//                
-//                userDefaults.setValue(phone_number as String, forKey: "userId")
-//            }else{
-//                let alert = UIAlertController(title: "", message: "User with same number is already exist", preferredStyle: UIAlertControllerStyle.Alert)
-//                
-//                let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
-//                    print("Ok Pressed");
-//                });
-//                
-//                alert.addAction(alertActionOk)
-//                
-//                presentViewController(alert, animated: true, completion: nil)
-//                
-//            }
-            
-        }else{
-            let alert = UIAlertController(title: "", message: "Invalid Phone Number !", preferredStyle: UIAlertControllerStyle.Alert)
-            
-            let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
-                print("Ok Pressed");
-            });
-            
-            alert.addAction(alertActionOk)
-            
-            presentViewController(alert, animated: true, completion: nil)
-        }
-    }
-    
+    //MARK: Text field Delegates
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true;
     }
     
+    //MARK: Register User Web Service
     func registerUser(){
         /* Web service Starts Here*/
         var dict = [String : String]()
@@ -97,9 +45,19 @@ class Register: UIViewController, UITextFieldDelegate {
         AppDelegate.getAppDelegate().callWebService(is_URL, parameters: dict, httpMethod: "POST", completion: { (result) -> Void in
             let userDefaults =  NSUserDefaults.standardUserDefaults()
             
-            userDefaults.setObject("\(result["fname"]) \(result["lname"])", forKey: "userName");
+            let strFullName = "\(result["fname"] as! String) \(result["lname"] as! String)"
             
-            userDefaults.setValue("\(result["id"])", forKey: "userId")
+            let strUserId = "\(result["id"] as! Int)"
+            
+            let strUserContactNo = "\(result["contactNo"] as! Int)"
+        
+            userDefaults.setObject(strFullName , forKey: "userName");
+            
+            userDefaults.setObject(strUserId, forKey: "userId")
+        
+            userDefaults.setObject(strUserContactNo, forKey: "userContactNo")
+            
+            AppDelegate.getAppDelegate().registerForGCM()
             
             dispatch_async(dispatch_get_main_queue()){
                 
@@ -143,5 +101,28 @@ class Register: UIViewController, UITextFieldDelegate {
             }
         }
         return false;
+    }
+    
+    //MARK:Others
+    @IBAction func btnRegister(sender: AnyObject) {
+        let phone_number = txtfldPhoneNumber.text as String!
+    
+        if(phone_number.characters.count == 10){
+            
+            AppDelegate.getAppDelegate().showActivityIndicator()
+            
+            registerUser()
+            
+        }else{
+            let alert = UIAlertController(title: "", message: "Invalid Phone Number !", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            let alertActionOk = UIAlertAction(title: "Ok", style: .Default, handler: { void in
+                print("Ok Pressed");
+            });
+            
+            alert.addAction(alertActionOk)
+            
+            presentViewController(alert, animated: true, completion: nil)
+        }
     }
 }
