@@ -23,8 +23,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     let objDB = Database.sharedDatabaseInstance.sharedInstance
     
-    var timerTemp: NSTimer?
-    
     var timer: NSTimer?
     
     
@@ -32,7 +30,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
         super.viewDidLoad()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.onEmergencyOccurrence(_:)), name:"onEmergencyOccurrence", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.onEmergencyOccurrence(_:)), name:"onMessageReceived", object: nil)
+        
+        let userDefaults =  NSUserDefaults.standardUserDefaults()
+        
+        if let isRemoteNotification = userDefaults.objectForKey("isRemoteNotificationAvailable"){
+            if isRemoteNotification as! Bool == true {
+                
+                let userInfo =  userDefaults.objectForKey("remoteNotification") as? [NSObject:AnyObject]
+        
+                NSNotificationCenter.defaultCenter().postNotificationName("onMessageReceived", object: nil,userInfo: userInfo)
+            }
+        }
+       
         
         vwMenuDrawer.hidden = true
         
@@ -53,13 +63,49 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         self.navigationItem.leftBarButtonItem = vwMenuDrawer.addSlideMenuButton()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        if AppDelegate.getAppDelegate().checkLocationService() {
+            if CLLocationManager.locationServicesEnabled() {
+                locationManager.delegate = self
+                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                self.locationManager.requestAlwaysAuthorization()
+                locationManager.startUpdatingLocation()
+                Map.showsUserLocation = true
+            }
+        }else{
+            let alert = UIAlertController(title: "Location Services Disable", message: "Location services on your device is turned off. In order to share your location, please enable location services in the Settigs app under Privacy, Location Services.", preferredStyle: UIAlertControllerStyle.Alert)
+            
+            alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { (alert: UIAlertAction!) in
+                print("")
+                UIApplication.sharedApplication().openURL(NSURL(string:"prefs:root=Privacy&path=LOCATION")!)
+                //UIApplicationOpenSettingsURLString
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (alert: UIAlertAction!) in
+                print("")
+            }))
+            
+            dispatch_async(dispatch_get_main_queue()){
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+            
+        }
+    }
+    
     func onEmergencyOccurrence(notification: NSNotification){
         
         print(notification)
+        let VCs = (self.navigationController!.childViewControllers) as [UIViewController]
         
-        let objVC:EmergencyLocation =  self.storyboard?.instantiateViewControllerWithIdentifier("emergencyLocationVC") as! EmergencyLocation
-        
-        self.navigationController?.pushViewController(objVC, animated: true)
+        if !VCs.last!.isKindOfClass(EmergencyLocation) {
+            let story:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            let objVC:EmergencyLocation =  story.instantiateViewControllerWithIdentifier("emergencyLocationVC") as! EmergencyLocation
+            
+            objVC.notificationInfo = notification.userInfo!
+            
+            self.navigationController!.pushViewController(objVC, animated: true)
+        }
     }
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
@@ -118,20 +164,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
      //MARK: Declare Emergency
     @IBAction func btnActnDeclareEmergency(sender: UIButton) {
-       timerTemp = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(ViewController.declareEmergency), userInfo: nil, repeats: true)
-        
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
-            self.timerTemp?.invalidate()
-        }
-        
-        if sender.selected {
-            timer?.invalidate()
-            sender.selected = false
+        if AppDelegate.getAppDelegate().checkLocationService() {
+            if sender.selected {
+                timer?.invalidate()
+                sender.selected = false
+            }else{
+                sender.selected = true
+                
+                declareEmergency()
+                
+                timer = NSTimer.scheduledTimerWithTimeInterval(60.0, target: self, selector: #selector(ViewController.declareEmergency), userInfo: nil, repeats: true)
+            }
         }else{
-            sender.selected = true
+            let alert = UIAlertController(title: "Location Services Disable", message: "Location services on your device is turned off. In order to share your location, please enable location services in the Settigs app under Privacy, Location Services.", preferredStyle: UIAlertControllerStyle.Alert)
             
-            timer = NSTimer.scheduledTimerWithTimeInterval(30.0, target: self, selector: #selector(ViewController.declareEmergency), userInfo: nil, repeats: true)
+            alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { (alert: UIAlertAction!) in
+                print("")
+                UIApplication.sharedApplication().openURL(NSURL(string:"prefs:root=Privacy&path=LOCATION")!)
+                //UIApplicationOpenSettingsURLString
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (alert: UIAlertAction!) in
+                print("")
+            }))
+            
+            dispatch_async(dispatch_get_main_queue()){
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+            
         }
     }
     func declareEmergency() -> Void {

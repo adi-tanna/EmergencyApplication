@@ -9,6 +9,7 @@
 
 import UIKit
 import Contacts
+import CoreLocation
 
 @UIApplicationMain
 
@@ -28,6 +29,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? NSDictionary {
+
+            let userDefaults =  NSUserDefaults.standardUserDefaults()
+
+            userDefaults.setObject(remoteNotification , forKey: "remoteNotification");
+        
+            userDefaults.setObject(true , forKey: "isRemoteNotificationAvailable");
+            
+        }else{
+            NSLog("This is normal Launching Option")
+        }
         
         let objDB = Database.sharedDatabaseInstance.sharedInstance
         
@@ -52,7 +65,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
        
         GCMService.sharedInstance().startWithConfig(gcmConfig)
         
+           NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.onEmergencyOccurrence(_:)), name:"onMessageReceived", object: nil)
+        
         return true
+    }
+    
+    func onEmergencyOccurrence(notification: NSNotification){
+        
+        print(notification)
+        
+        let VCs = (self.window?.rootViewController!.childViewControllers)! as [UIViewController]
+        
+        NSLog("This are VCs when app in open after killing %@", VCs)
+    
+        if !VCs.last!.isKindOfClass(EmergencyLocation) {
+            let story:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            let objVC:EmergencyLocation =  story.instantiateViewControllerWithIdentifier("emergencyLocationVC") as! EmergencyLocation
+            
+            self.window?.rootViewController!.navigationController?.pushViewController(objVC, animated: true)
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -70,7 +102,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 1
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        
+      
+      
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -81,8 +119,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
         if (registrationToken != nil) {
             self.registrationToken = registrationToken
             print(registrationToken)
+            
             NSUserDefaults.standardUserDefaults().setValue(self
                 .registrationToken, forKey: "GCMRegistrationToken")
+            
+            let Default = NSUserDefaults.standardUserDefaults()
+            
+            if let strPN = Default.objectForKey("userContactNo"){
+                
+                if (strPN.length as Int == 10) {
+                    
+                    AppDelegate.getAppDelegate().registerForGCM()
+                }
+            }
             
         } else {
             print("Registration to GCM failed with error: \(error.localizedDescription)")
@@ -125,7 +174,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
             // Handle the received message
             // Invoke the completion handler passing the appropriate UIBackgroundFetchResult value
             // [START_EXCLUDE]
-            NSNotificationCenter.defaultCenter().postNotificationName("onMessageReceived", object: nil,
+    
+        NSNotificationCenter.defaultCenter().postNotificationName("onMessageReceived", object: nil,
                 userInfo: userInfo)
             handler(UIBackgroundFetchResult.NewData);
             // [END_EXCLUDE]
@@ -233,6 +283,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GGLInstanceIDDelegate, GC
             isAccessGranted = false
         }
     }
+    
+    func checkLocationService() -> Bool {
+        
+        var status:Bool = false
+        
+        if CLLocationManager.locationServicesEnabled() {
+            switch(CLLocationManager.authorizationStatus()) {
+            case .NotDetermined, .Restricted, .Denied:
+               status = false
+            case .AuthorizedAlways, .AuthorizedWhenInUse:
+              status = true
+            }
+        } else {
+            print("Location services are not enabled")
+        }
+        return status
+    }
+    
     //MARK: Global App Delegate
     class func getAppDelegate()  -> AppDelegate {
         return UIApplication.sharedApplication().delegate as! AppDelegate

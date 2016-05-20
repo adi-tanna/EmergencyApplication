@@ -19,25 +19,27 @@ class LogInViewController: UIViewController,UITextFieldDelegate {
         
         super.viewDidLoad()
         
+        let Default = NSUserDefaults.standardUserDefaults()
+        
+        if let strPN = Default.objectForKey("userContactNo"){
+            
+            if (strPN.length as Int == 10) {
+                
+                AppDelegate.getAppDelegate().registerForGCM()
+                
+                let objVC:ViewController =  self.storyboard?.instantiateViewControllerWithIdentifier("homevc") as! ViewController
+                
+                self.navigationController?.pushViewController(objVC, animated: false)
+            }
+        }
+
+        
         print(objDb.getDatabaseFilePath())
     }
     
     override func viewWillAppear(animated: Bool){
         super.viewWillAppear(animated)
         
-        let Default = NSUserDefaults.standardUserDefaults()
-        
-        if let strPN = Default.objectForKey("userId"){
-            
-            if (strPN.length as Int > 0) {
-                
-                AppDelegate.getAppDelegate().registerForGCM()
-                
-                let objVC:ViewController =  self.storyboard?.instantiateViewControllerWithIdentifier("homevc") as! ViewController
-                
-                self.navigationController?.pushViewController(objVC, animated: true)
-            }
-        }
         print("View WILL APPER CALLED")
     }
     

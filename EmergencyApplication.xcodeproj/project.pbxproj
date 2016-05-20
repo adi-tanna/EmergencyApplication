@@ -19,6 +19,7 @@
 		F79C9F7C1CEC2C65007B7831 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F79C9F7B1CEC2C65007B7831 /* MessageUI.framework */; };
 		F79C9F861CEC2C94007B7831 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F79C9F851CEC2C94007B7831 /* UIKit.framework */; };
 		F79EDB901CEDC03E006BE99D /* EmergencyLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */; };
+		F79EDB921CEF3601006BE99D /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79EDB911CEF3601006BE99D /* Pin.swift */; };
 		F7DB7C9B1CD9A73B00B54CBC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */; };
 		F7DB7C9C1CD9A73B00B54CBC /* AsEmergencyContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */; };
 		F7DB7C9D1CD9A73B00B54CBC /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DB7C8C1CD9A73B00B54CBC /* Button.swift */; };
@@ -69,6 +70,7 @@
 		F79C9F871CEC2CA9007B7831 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		F79C9F891CEC2DA7007B7831 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmergencyLocation.swift; sourceTree = "<group>"; };
+		F79EDB911CEF3601006BE99D /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 		F7A6CAA71CD9F5E3009B9AFB /* EmergencyApplication-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EmergencyApplication-Bridging-Header.h"; sourceTree = "<group>"; };
 		F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsEmergencyContactVC.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				F7DB7C8A1CD9A73B00B54CBC /* AppDelegate.swift */,
+				F79EDB911CEF3601006BE99D /* Pin.swift */,
 				F79EDB8F1CEDC03D006BE99D /* EmergencyLocation.swift */,
 				F7DB7C8B1CD9A73B00B54CBC /* AsEmergencyContactVC.swift */,
 				F7DB7C8C1CD9A73B00B54CBC /* Button.swift */,
@@ -399,6 +402,7 @@
 				F7DB7CA11CD9A73B00B54CBC /* MenuDrawer.swift in Sources */,
 				F7DB7CA31CD9A73B00B54CBC /* ViewController.swift in Sources */,
 				F7DB7CA01CD9A73B00B54CBC /* LogInViewController.swift in Sources */,
+				F79EDB921CEF3601006BE99D /* Pin.swift in Sources */,
 				F79EDB901CEDC03E006BE99D /* EmergencyLocation.swift in Sources */,
 				F7DB7C9C1CD9A73B00B54CBC /* AsEmergencyContactVC.swift in Sources */,
 				F7DB7C9E1CD9A73B00B54CBC /* CircleButton.swift in Sources */,
